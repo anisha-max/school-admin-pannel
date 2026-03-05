@@ -9,7 +9,7 @@ function Sidebar() {
     { name: 'Faculty', icon: <Users />, path: '/manage/faculty' },
     { name: 'News', icon: <Newspaper />, path: '/manage/news' },
     { name: 'Gallery', icon: <Image />, path: '/manage/gallery' },
-    { name: 'Events', icon: <Calendar />, path: '/manage/event' },
+    { name: 'Events', icon: <Calendar />, path: '/manage/events' },
     { name: 'Blogs', icon: <BookOpen />, path: '/manage/blog' },
   ];
 

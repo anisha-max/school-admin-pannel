@@ -10,14 +10,80 @@ const ManagementPage = () => {
   const [loading, setLoading] = useState(true);
 
   // Configuration for different modules
-  const configs = {
-    faculty: { title: "Faculty Members", endpoint: "/faculty/all", imgKey: "image", cols: [{header: 'Name', field: 'name'}, {header: 'Designation', field: 'designation'}] },
-    news: { title: "School News", endpoint: "/news", imgKey: "imageUrl", cols: [{header: 'Title', field: 'title'}, {header: 'Category', field: 'category'}] },
-    blog: { title: "Blog Posts", endpoint: "/blog/all", imgKey: "thumbnail", cols: [{header: 'Title', field: 'title'}] },
-    gallery: { title: "Gallery Albums", endpoint: "/gallery/all", imgKey: "coverImage", cols: [{header: 'Title', field: 'title'}, {header: 'Category', field: 'category'}] },
-    event: { title: "Events", endpoint: "/event/all", imgKey: null, cols: [{header: 'Title', field: 'title'}, {header: 'Status', field: 'status'}] },
-    contact: { title: "Contact Inquiries", endpoint: "/contact/all", imgKey: null, cols: [{header: 'Name', field: 'name'}, {header: 'Email', field: 'email'}] },
-  };
+const configs = {
+  faculty: {
+    title: "Faculty Members",
+    endpoint: "/faculty/all",
+    imgKey: "image",
+    cols: [
+      { header: 'Name', field: 'name' },
+      { header: 'Email', field: 'email' },
+      { header: 'Phone', field: 'phone' },
+      { header: 'Address', field: 'address' },
+      { header: 'Designation', field: 'designation' }
+    ]
+  },
+
+  news: {
+    title: "School News",
+    endpoint: "/news",
+    imgKey: "imageUrl",
+    cols: [
+      { header: 'Title', field: 'title' },
+      { header: 'Content', field: 'content' },
+      { header: 'Category', field: 'category' },
+      { header: 'Author', field: 'author.name' }
+    ]
+  },
+
+  blog: {
+    title: "Blog Posts",
+    endpoint: "/blog/all",
+    imgKey: "thumbnail",
+    cols: [
+      { header: 'Title', field: 'title' },
+      { header: 'Content', field: 'content' },
+      { header: 'Tags', field: 'tags' },
+      { header: 'Author', field: 'author.name' }
+    ]
+  },
+
+  gallery: {
+    title: "Gallery Albums",
+    endpoint: "/gallery/all",
+    imgKey: "coverImage",
+    cols: [
+      { header: 'Title', field: 'title' },
+      { header: 'Description', field: 'description' },
+      { header: 'Category', field: 'category' }
+    ]
+  },
+
+  events: {
+    title: "Events",
+    endpoint: "/events/all",
+    imgKey: null,
+    cols: [
+      { header: 'Title', field: 'name' },
+      { header: 'Description', field: 'description' },
+      { header: 'Start Date', field: 'startDate' },
+      { header: 'End Date', field: 'endDate' },
+      { header: 'Organizer', field: 'organizer.name' },
+      { header: 'Location', field: 'location' },
+      { header: 'Status', field: 'status' }
+    ]
+  },
+
+  contact: {
+    title: "Contact Inquiries",
+    endpoint: "/contact/all",
+    imgKey: null,
+    cols: [
+      { header: 'Name', field: 'name' },
+      { header: 'Email', field: 'email' }
+    ]
+  }
+};
 
   const currentConfig = configs[type];
 
@@ -30,6 +96,7 @@ const ManagementPage = () => {
       // Faculty/Blog/Contact use .data | Event uses .events | News/Gallery use direct array
       const result = res.data.data || res.data.events || res.data;
       setData(Array.isArray(result) ? result : []);
+      console.log(result)
     } catch (err) {
       console.error(err);
     } finally {

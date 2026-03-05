@@ -15,47 +15,65 @@ const CreateItem = () => {
     faculty: {
       title: "Add Faculty Member",
       fields: [
-        { name: 'name', label: 'Full Name', type: 'text', required: true },
-        { name: 'email', label: 'Email Address', type: 'email', required: true },
+        { name: 'name', label: 'Full Name', type: 'text' },
+        { name: 'email', label: 'Email Address', type: 'email' },
         { name: 'phone', label: 'Phone Number', type: 'text' },
-        { name: 'designation', label: 'Designation (e.g. Professor)', type: 'text', required: true },
+        { name: 'address', label: 'Address', type: 'text' },
+        { name: 'designation', label: 'Designation (e.g. Professor)', type: 'text' },
         { name: 'image', label: 'Profile Photo', type: 'file', multiple: false }
       ]
     },
     news: {
       title: "Post News Update",
       fields: [
-        { name: 'title', label: 'News Title', type: 'text', required: true },
-        { name: 'content', label: 'Main Content', type: 'textarea', required: true },
-        { name: 'category', label: 'Category', type: 'text' },
+        { name: 'title', label: 'News Title', type: 'text' },
+        { name: 'content', label: 'Main Content', type: 'textarea' },
+        {
+          name: 'category', label: 'Category', type: 'select', options: [
+            "announcement",
+            "academic",
+            "event",
+            "sports",
+            "achievement",
+            "admission",
+            "holiday",
+            "general"
+          ]
+        },
+        { name: 'author', label: 'Author', type: 'text' },
         { name: 'imageUrl', label: 'News Banner', type: 'file', multiple: false }
       ]
     },
     blog: {
       title: "Write New Blog",
       fields: [
-        { name: 'title', label: 'Blog Title', type: 'text', required: true },
-        { name: 'content', label: 'Article Content', type: 'textarea', required: true },
+        { name: 'title', label: 'Blog Title', type: 'text' },
+        { name: 'content', label: 'Article Content', type: 'textarea' },
         { name: 'tags', label: 'Tags (comma separated)', type: 'text' },
+        { name: 'author', label: 'Author', type: 'text' },
         { name: 'thumbnail', label: 'Blog Thumbnail', type: 'file', multiple: false }
       ]
     },
-    event: {
+    events: {
       title: "Schedule New Event",
       fields: [
-        { name: 'title', label: 'Event Name', type: 'text', required: true },
+        { name: 'name', label: 'Event Name', type: 'text' },
         { name: 'description', label: 'Details', type: 'textarea' },
         { name: 'startDate', label: 'Start Date', type: 'date' },
-        { name: 'location', label: 'Venue/Location', type: 'text' }
+        { name: 'endDate', label: 'End Date', type: 'date' },
+        { name: 'organizer', label: 'Organizer', type: 'text' },
+        { name: 'location', label: 'Venue/Location', type: 'text' },
+        { name: 'status', label: 'Staus', type: 'select', options: ['scheduled', 'cancelled', 'completed'] },
+          { name: 'images', label: 'Upload Multiple Photos', type: 'file', multiple: true },
       ]
     },
     gallery: {
       title: "Create Gallery Album",
       fields: [
-        { name: 'title', label: 'Album Name', type: 'text', required: true },
+        { name: 'title', label: 'Album Name', type: 'text' },
         { name: 'description', label: 'Short Description', type: 'text' },
-        { name: 'category', label: 'Category', type: 'text' },
-        { name: 'images', label: 'Upload Multiple Photos', type: 'file', multiple: true }
+        { name: 'category', label: 'Category', type: 'select', options: ['Events', 'Sports', 'Campus', 'Academic', 'Other'] },
+        { name: 'images', label: 'Upload Multiple Photos', type: 'file', multiple: true },
       ]
     }
   };
@@ -76,7 +94,7 @@ const CreateItem = () => {
 
     // 2. Append Files (Based on your Controller logic)
     if (files) {
-      if (type === 'gallery') {
+      if (type === 'gallery' || type === 'events') {
         // Gallery controller expects 'images' (multiple)
         Array.from(files).forEach(file => data.append('images', file));
       } else {
@@ -87,17 +105,12 @@ const CreateItem = () => {
     }
 
     try {
-      // Endpoint logic: Gallery uses /gallery/create, others vary
-      const endpoint = type === 'gallery' ? '/gallery/create' : `/${type}/create-blog` || `/${type}/add` || `/${type}/create`;
-      
-      // Note: Check your specific router paths, some use 'add', some 'create'
-      const finalUrl = type === 'faculty' ? '/faculty/add' : 
-                       type === 'blog' ? '/blog/create-blog' : 
-                       `/${type}/create`;
+      const endpoint = `/${type}/create`;
 
-      await api.post(finalUrl, data, {
+   const response =    await api.post(endpoint, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      console.log(response)
       alert(`${type} created successfully!`);
       navigate(`/manage/${type}`);
     } catch (err) {
@@ -122,7 +135,7 @@ const CreateItem = () => {
             {current.fields.map((field) => (
               <div key={field.name} className={field.type === 'textarea' ? "md:col-span-2" : ""}>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
-                
+
                 {field.type === 'textarea' ? (
                   <textarea
                     name={field.name}
@@ -145,6 +158,12 @@ const CreateItem = () => {
                       </div>
                     </div>
                   </div>
+                ) : field.type === 'select' ? (
+                  <select name={field.name} defaultValue={"general"} className='w-full p-3 border capitalize border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none'>
+                    {field.options.map((option) => (
+                      <option value={option} className='capitalize'>{option}</option>
+                    ))}
+                  </select>
                 ) : (
                   <input
                     type={field.type}
